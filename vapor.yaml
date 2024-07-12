@@ -10,14 +10,13 @@ environments:
     queue-timeout: 600
     cli-timeout: 600
     runtime: docker
-
     build:
       - 'composer install --no-dev'
       - 'php artisan optimize'
       - 'php artisan event:cache'
       - 'php artisan config:cache'
       - 'php artisan sidecar:deploy --env=staging'
-      - 'npm ci && npm run build && rm -rf node_modules'
+#      - 'npm ci && npm run build && rm -rf node_modules'
     deploy:
       - 'php artisan migrate --force'
       - 'php artisan sidecar:activate --env=staging'

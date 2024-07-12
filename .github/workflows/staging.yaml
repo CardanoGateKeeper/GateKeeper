@@ -5,7 +5,7 @@ on:
     branches:
       - staging
 jobs:
-  deploy:
+  deploy-staging:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,9 +19,16 @@ jobs:
       - name: Require Vapor CLI
         run: composer global require laravel/vapor-cli
       - name: Install Project Dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+      - name: Require NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      - name: Build Vite Package
+        run: npm run build
       - name: Deploy Environment
-        run: vapor deploy
+        run: vapor deploy staging
         env:
           VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
 
