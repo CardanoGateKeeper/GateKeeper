@@ -23,10 +23,10 @@ jobs:
       - name: Require NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           cache: 'npm'
       - name: Build Vite Package
-        run: npm run build
+        run: npm ci && npm run build
       - name: Deploy Environment
         run: vapor deploy staging
         env:
