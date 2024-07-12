@@ -8,10 +8,10 @@ environments:
     build:
       - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
       - 'php artisan event:cache'
-      - 'php artisan sidecar:deploy --env=production'
+#      - 'php artisan sidecar:deploy --env=production'
       - 'npm ci && npm run build && rm -rf node_modules'
     deploy:
-      - 'php artisan sidecar:activate --env=production'
+      - 'php artisan sidecar:deploy --activate'
   staging:
     memory: 1024
     cli-memory: 512
@@ -19,7 +19,7 @@ environments:
     build:
       - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
       - 'php artisan event:cache'
-      - 'php artisan sidecar:deploy --env=staging'
+#      - 'php artisan sidecar:deploy --env=staging'
       - 'npm ci && npm run build && rm -rf node_modules'
     deploy:
-      - 'php artisan sidecar:activate --env=staging'
+      - 'php artisan sidecar:deploy --activate'
