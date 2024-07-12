@@ -1,23 +1,25 @@
-id: 63343
+id: 63344
 name: gatekeeper
 environments:
+  production:
+    memory: 1024
+    cli-memory: 512
+    runtime: 'php-8.3:al2'
+    build:
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
+      - 'php artisan event:cache'
+      - 'php artisan sidecar:deploy --env=production'
+      - 'npm ci && npm run build && rm -rf node_modules'
+    deploy:
+      - 'php artisan sidecar:activate --env=production'
   staging:
     memory: 1024
     cli-memory: 512
-    #    runtime: 'php-8.3:al2'
-    timeout: 60
-    queue-memory: 512
-    queue-timeout: 600
-    cli-timeout: 600
     runtime: docker
     build:
-      - 'composer install --no-dev'
-      - 'php artisan optimize'
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
       - 'php artisan event:cache'
-      - 'php artisan config:cache'
       - 'php artisan sidecar:deploy --env=staging'
-#      - 'npm ci && npm run build && rm -rf node_modules'
+      - 'npm ci && npm run build && rm -rf node_modules'
     deploy:
-      - 'php artisan migrate --force'
       - 'php artisan sidecar:activate --env=staging'
-
