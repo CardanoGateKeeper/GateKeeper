@@ -1,0 +1,21 @@
+{
+  "name": "gatekeeper-lambda",
+  "version": "1.0.0",
+  "description": "Lambda functions for GateKeeper 1.5",
+  "main": "index.js",
+  "exports": {
+    "./signData": "./signData.js",
+    "./signData.js": "./signData.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam K. Dean <adam@crypto2099.io>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@emurgo/cardano-message-signing-nodejs": "^1.0.1",
+    "@emurgo/cardano-serialization-lib-nodejs": "^11.5.0",
+    "buffer": "^6.0.3",
+    "cbor": "^9.0.2"
+  }
+}

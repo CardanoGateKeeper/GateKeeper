@@ -1,0 +1,27 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches:
+      - staging
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.0
+          tools: composer:v2
+          coverage: none
+      - name: Require Vapor CLI
+        run: composer global require laravel/vapor
+      - name: Install Project Dependencies
+        run: composer install --no-interaction
+      - name: Deploy Environment
+        run: vapor deploy
+        env:
+          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
+
