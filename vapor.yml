@@ -6,7 +6,7 @@ environments:
     cli-memory: 512
     runtime: docker
     database: gatekeeper-production
-    storage: gatekeeper-production
+    storage: vapor-gatekeeper-production-storage
     build:
       - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
       - 'php artisan event:cache'
@@ -20,7 +20,7 @@ environments:
     cli-memory: 512
     runtime: docker
     database: gatekeeper-staging
-    storage: gatekeeper-staging
+    storage: vapor-gatekeeper-staging-storage
     build:
       - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
       - 'php artisan event:cache'
