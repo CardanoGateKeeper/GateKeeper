@@ -19,12 +19,6 @@
       'user_id',
     ];
 
-    /*protected $visible = [
-      'hash',
-      'name',
-      'profile_photo_url',
-    ];*/
-
     protected $hidden = [
       'created_at',
       'updated_at',

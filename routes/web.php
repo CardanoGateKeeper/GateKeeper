@@ -57,7 +57,10 @@
          Route::resource('manage-event', EventAdminController::class);
 
          Route::resource('team.policy', TeamPolicyController::class)
-              ->shallow();
+              ->shallow()
+              ->names([
+                'show' => 'team.policy.show'
+              ]);
          Route::resource('event.policy', EventPolicyController::class);
        });
 
