@@ -4,7 +4,6 @@
 
   use Illuminate\Http\Request;
   use Illuminate\Support\Facades\Cache;
-  use Illuminate\Support\Facades\Config;
 
   class ImageController extends Controller
   {
@@ -14,8 +13,8 @@
 
     public function __construct()
     {
-      $this->domain = Config::get('app.nftcdn_domain');
-      $this->key = base64_decode(Config::get('app.nftcdn_key'));
+      $this->domain = config('app.nftcdn_domain');
+      $this->key = base64_decode(config('app.nftcdn_key'));
     }
 
     public function show(string $asset_key, Request $request)

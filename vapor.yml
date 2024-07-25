@@ -8,9 +8,10 @@ environments:
     database: gatekeeper-production
     storage: vapor-gatekeeper-production-storage
     build:
-      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader'
+      - 'php artisan optimize'
       - 'php artisan event:cache'
-#      - 'php artisan sidecar:deploy --env=production'
+      #      - 'php artisan sidecar:deploy --env=production'
       - 'npm ci && npm run build && rm -rf node_modules'
     deploy:
       - 'php artisan sidecar:deploy --activate'
@@ -22,9 +23,10 @@ environments:
     database: gatekeeper-staging
     storage: vapor-gatekeeper-staging-storage
     build:
-      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader'
+      - 'php artisan optimize'
       - 'php artisan event:cache'
-#      - 'php artisan sidecar:deploy --env=staging'
+      #      - 'php artisan sidecar:deploy --env=staging'
       - 'npm ci && npm run build && rm -rf node_modules'
     deploy:
       - 'php artisan sidecar:deploy --activate'
