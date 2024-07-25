@@ -23,7 +23,7 @@ environments:
     runtime: docker
     database: gatekeeper-staging
     storage: vapor-gatekeeper-staging-storage
-    cache: poosaas-staging
+    cache: gatekeeper-redis
     build:
       - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader'
       - 'php artisan optimize'
