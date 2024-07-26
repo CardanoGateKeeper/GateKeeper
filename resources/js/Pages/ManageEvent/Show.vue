@@ -82,12 +82,12 @@ const policyOptions = {
   <AppLayout title="Manage Event">
     <v-container>
       <v-row>
-        <v-col cols="12" md="6" lg="4" xl="3">
+        <v-col cols="12" lg="6" xl="4">
           <h1 class="text-center mb-8">Manage Event</h1>
 
           <EventDetailsCard :event="event"/>
         </v-col>
-        <v-col cols="12" md="6" lg="8" xl="9">
+        <v-col cols="12" lg="6" xl="8">
           <v-row class="text-center">
             <v-col cols="12">
               <h2>Ticket Stats</h2>

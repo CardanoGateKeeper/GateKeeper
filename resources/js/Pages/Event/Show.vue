@@ -17,14 +17,11 @@ import {
 import {onMounted, ref, watch} from 'vue'
 import {useTheme} from "vuetify";
 import GuestLayout from "@/Layouts/GuestLayout.vue";
-// import axios from "axios";
 import {bech32} from "bech32";
 import blake2b from "blake2b";
 import Koios from "@/Plugins/Koios.js";
 import CardanoTxn from "@/Plugins/CardanoTxn.js";
-import QRCodeStyling from 'styled-qr-code';
-// import QRCodeStyling from "qr-code-styling";
-// import QRCodeVue3 from "qrcode-vue3";
+import TicketQrCode from "@/Pages/Event/Partials/TicketQrCode.vue";
 
 const koios_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyIjoic3Rha2UxdXk1Nm5uN3c1OGRyNWsyOG1mcnhnaHBuZ25uNHo0N2pkcGdwOW1ldXZncDdrNXFtaHljbnAiLCJleHAiOjE3NTA0NDIxMjksInRpZXIiOjEsInByb2pJRCI6ImdhdGVrZWVwZXJfZGV2ZWxvcG1lbnQifQ.MdJeU_o85Z8OG51cNRijbcdD78S7vmbrXc9pIA6u-oY";
 
@@ -33,7 +30,8 @@ const props = defineProps({
 });
 
 const modal = ref({
-  connectWallet: false
+  connectWallet: false,
+  showTicket:    false
 })
 
 const cardano = ref({
@@ -243,15 +241,10 @@ const generate_ticket = async (asset) => {
 
   try {
     if (!cardano.value.hardware_mode) {
-      // Do signData method here
       signature = await signData(stake_address_cbor, nonce, asset.policy_id, asset.asset_id);
-      console.log(`SignData Signature:`, signature);
     } else {
-      // Do Expired Txn method here
       const txn = await createTxn(stake_key, nonce);
-      console.log(`Built Transaction`, txn.to_hex());
       const witness = await cardano.value.connection.signTx(txn.to_hex(), true);
-      console.log(`SignTxn Signature:`, witness);
 
       const witnessSet = TransactionWitnessSet.new();
       const totalVkeys = Vkeywitnesses.new();
@@ -264,7 +257,7 @@ const generate_ticket = async (asset) => {
       }
 
       witnessSet.set_vkeys(totalVkeys);
-      const signedTx = await Transaction.new(
+      const signedTx = Transaction.new(
         txn.body(),
         witnessSet,
         txn.auxiliary_data()
@@ -298,10 +291,9 @@ const generate_ticket = async (asset) => {
   }
 
   if (ticket_validation) {
-    console.log(`Ticket Validated!`, ticket_validation);
-    qrCodeProps.value.image = asset.fingerprint ? route('image.show', {asset_key: asset.fingerprint}) : '';
-    qrCodeProps.value.data = ticket_validation.data.qr_value;
-    console.log(qr_image_value);
+    modal.value.showTicket = true;
+    qr_image_value = asset.fingerprint ? route('image.show', {asset_key: asset.fingerprint}) : '';
+    qr_code_value = ticket_validation.data.qr_value;
   }
 
 
@@ -310,48 +302,6 @@ const generate_ticket = async (asset) => {
 
 let qr_code_value = null;
 let qr_image_value = '';
-
-const qrCodeRef = ref(null);
-
-const qrOptions = {
-  width:                512,
-  height:               512,
-  type:                 'canvas',
-  margin:               8,
-  qrOptions:            {
-    typeNumber:           0,
-    mode:                 'Byte',
-    errorCorrectionlevel: 'H'
-  },
-  imageOptions:         {
-    hideBackgroundDots: true,
-    imageSize:          0.6,
-    margin:             4,
-    crossOrigin:        false
-  },
-  dotsOptions:          {
-    // type:  'rounded',
-    color: '#000000',
-  },
-  backgroundOptions:    {
-    color: "#ffffff"
-  },
-  cornersSquareOptions: {
-    type:  "extra-rounded",
-    color: "#000000"
-  },
-  cornersDotOptions:    {
-    type:  "dot",
-    color: "#000000"
-  },
-};
-
-const qrCodeProps = ref({
-  data:  null,
-  image: '',
-});
-
-const qrCode = new QRCodeStyling(qrOptions);
 
 const createTxn = async (stake_key, nonce) => {
   const params = await Koios.getParameters({
@@ -401,7 +351,6 @@ const createTxn = async (stake_key, nonce) => {
   return txBuilder.build_tx();
 }
 
-
 const signData = async (stake_address, nonce, policy_id, asset_id) => {
   const payload = cardano.value.connection.signData(stake_address, nonce);
   console.log(`Sign Data Payload`, payload);
@@ -412,30 +361,7 @@ onMounted(async () => {
   find_wallets();
   localTheme.value = localStorage.getItem('gatekeeper:theme') ?? 'light';
   theme.global.name.value = localTheme.value;
-  qrCode.append(qrCodeRef.value);
-
 });
-
-watch(
-  () => qrCodeProps.value,
-  async (newValue) => {
-    // console.log("Props updated!", newValue);
-    const timestamp = new Date().getTime();
-    // const imageUrlWithQueryParam = `${imageUrl}?timestamp=${timestamp}`;
-    qrCode.update({
-      ...qrOptions,
-      data: newValue.data,
-      // image: `https://ui-avatars.com/api/?name=S+i+t+H&color=7F9CF5&background=EBF4FF&timestamp=${timestamp}` // newValue.image
-      image: `${newValue.image}?timestamp=${timestamp}` // newValue.image
-    });
-    if (newValue.data !== null) {
-      qrCode.append(qrCodeRef.value);
-      console.log(qrCode, qrCodeRef);
-      console.log(await qrCode.toDataUrl());
-    }
-  },
-  {deep: true}
-);
 
 const theme = useTheme()
 
@@ -571,35 +497,33 @@ header {
           <div
             v-if="cardano.connected.assets[policy.hash]?.length">
             <h2 class="mb-4">{{ policy.name }} Assets</h2>
-            <div class="d-flex flex-row mb-8">
-              <v-card
-                v-for="token in cardano.connected.assets[policy.hash] || []"
-                class="mx-2"
-                width="25%">
-                <v-card-title>{{ token.name }}</v-card-title>
-                <v-img
-                  :src="token.fingerprint ? route('image.show', {asset_key: token.fingerprint}) : ''"/>
-                <!--                <v-img :src="token.qrcode" v-if="token.qrcode"/>-->
-                <v-card-actions>
-                  <v-btn color="primary" @click="generate_ticket(token)">
-                    Generate
-                    Ticket
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </div>
+            <v-row class="mb-8">
+              <v-col cols="6" md="4" lg="3" xl="2"
+                     v-for="token in cardano.connected.assets[policy.hash] || []">
+                <v-card>
+                  <v-card-title>{{ token.name }}</v-card-title>
+                  <v-img
+                    :src="token.fingerprint ? route('image.show', {asset_key: token.fingerprint}) : ''"/>
+                  <v-card-actions>
+                    <v-btn color="primary" @click="generate_ticket(token)">
+                      Generate
+                      Ticket
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
           </div>
         </template>
       </template>
     </v-container>
-    <div class="qrcode_container" ref="qrCodeRef"></div>
     <v-dialog v-model="modal.connectWallet" persistent scrollable
               max-width="512">
       <v-card>
         <v-card-title class="d-flex align-center">
           Connect Wallet
-          <v-spacer></v-spacer>
-          <v-btn icon="mdi-close" @click="modal.connectWallet = false"></v-btn>
+          <v-spacer/>
+          <v-btn icon="mdi-close" @click="modal.connectWallet = false"/>
         </v-card-title>
         <v-card-text>
           <v-btn :loading="wallet.busy" block
@@ -612,6 +536,27 @@ header {
             {{ format_wallet_name(wallet) }}
           </v-btn>
         </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="modal.showTicket" persistent scrollable max-width="560">
+      <v-card>
+        <v-card-title class="d-flex align-center">
+          Your Ticket
+          <v-spacer/>
+          <v-btn icon="mdi-close" @click="modal.showTicket = false"/>
+        </v-card-title>
+        <v-card-text class="text-center">
+          <TicketQrCode :data="qr_code_value" :image="qr_image_value"/>
+        </v-card-text>
+        <v-card-text>
+          <v-alert type="info">
+            The QR code shown above is your ticket! Please print it out or save
+            it to your mobile device to be shown at the door when you check in!
+          </v-alert>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="modal.showTicket = false">Close</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </GuestLayout>

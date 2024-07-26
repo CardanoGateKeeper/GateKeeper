@@ -44,7 +44,7 @@ const vuetify = createVuetify({
     },
 });
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'GateKeeper';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
