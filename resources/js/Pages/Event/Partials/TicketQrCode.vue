@@ -28,8 +28,8 @@ const qr_options = {
     hideBackgroundDots: true,
     imageSize:          1,
     margin:             2,
-    crossOrigin:        false,
-    // crossOrigin:        'anonymous'
+    // crossOrigin:        false,
+    crossOrigin:        'anonymous'
   },
   dotsOptions:          {
     // type:  'rounded',
@@ -79,7 +79,7 @@ watch(() => props, async (newValue) => {
 
 <template>
   <div ref="qr_code"/>
-  <!--  <v-btn color="primary" @click="doDownload">Download</v-btn>-->
+    <v-btn color="primary" @click="doDownload">Download</v-btn>
 </template>
 
 <style>
