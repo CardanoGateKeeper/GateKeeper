@@ -4,8 +4,17 @@
   --jtd-body-font: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-/* Rounded buttons, subtle feel */
+/* Rounded corners for dark/light */
 .btn, .btn-primary { border-radius: 0.75rem; }
+
+/* Card/code in dark mode */
+@media (prefers-color-scheme: dark) {
+  .main-content .card, pre, code, table {
+    border-radius: 0.6rem;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+}
+
 
 /* Rounded cards & code blocks */
 .main-content .card, pre, code, table { border-radius: 0.6rem; }

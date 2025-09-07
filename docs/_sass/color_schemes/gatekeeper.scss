@@ -1,9 +1,9 @@
 /* GateKeeper color scheme for Just the Docs */
 
-/* Brand */
-$gk-blue-500: #2E77D0;   /* primary */
-$gk-blue-600: #2269BE;   /* hover/active */
-$gk-blue-700: #1A57A0;   /* focus/pressed */
+/* Brand (purple primary) */
+$gk-purple-500: #9869fe;   /* primary */
+$gk-purple-600: #8650fc;   /* hover/active */
+$gk-purple-700: #6f3fd9;   /* focus/pressed */
 
 /* Neutrals */
 $gk-gray-900: #0F1115;
@@ -17,7 +17,7 @@ $gk-gray-200: #C1C7D0;
 $gk-gray-100: #E6E9EE;
 $gk-white:    #FFFFFF;
 
-/* Theme variables expected by Just the Docs */
+/* Theme variables */
 $body-background-color: $gk-white;
 $sidebar-color: $gk-gray-100;
 
@@ -25,8 +25,9 @@ $body-text-color: #0B1020;
 $body-heading-color: #0B1020;
 $nav-child-link-color: $body-text-color;
 
-$link-color: $gk-blue-500;
-$btn-primary-color: $gk-blue-500;
+/* Brand uses */
+$link-color: $gk-purple-500;
+$btn-primary-color: $gk-purple-500;
 
 $code-background-color: #F6F8FB;
 $search-background-color: $gk-white;
