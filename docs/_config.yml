@@ -4,7 +4,6 @@ description: Developer and user documentation for the GateKeeper project
 
 remote_theme: just-the-docs/just-the-docs
 color_scheme: gatekeeper
-color_scheme_toggle: true
 
 # IMPORTANT for Pages under an org/repo:
 url: https://cardanogatekeeper.github.io
