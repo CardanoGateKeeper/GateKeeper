@@ -4,8 +4,10 @@
     (function () {
         const KEY = "gk-theme";
         const saved = localStorage.getItem(KEY);
-        const initial = saved || "gatekeeper"; // default to light
-        if (typeof jtd !== "undefined") jtd.setTheme(initial);
+        const initial = saved || "gatekeeper";
+        if (typeof jtd !== "undefined") {
+            jtd.setTheme(initial);
+        }
 
         document.addEventListener("DOMContentLoaded", function () {
             const btn = document.getElementById("gk-theme-toggle");
@@ -17,6 +19,7 @@
             refreshIcon();
             btn.addEventListener("click", function () {
                 const next = isDark() ? "gatekeeper" : "gatekeeper-dark";
+                console.log("What next?", next, isDark(), icon.textContent, jtd.getTheme());
                 jtd.setTheme(next);
                 localStorage.setItem(KEY, next);
                 refreshIcon();
