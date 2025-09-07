@@ -1,3 +1,9 @@
+---
+layout: default
+title: User Guide
+nav_order: 2
+---
+
 # User Guide for GateKeeper
 
 This guide covers the new features: creating events, generating NFT-linked tickets, viewing reports, and multi-event management. Assumes you have a Cardano wallet (e.g., Eternl or Nami) for NFT interactions.
