@@ -3,20 +3,29 @@
 <script>
     (function () {
         const KEY = "gk-theme";
-        const saved = localStorage.getItem(KEY);
+        const mapToKnown = (t) =>
+            t === "dark" ? "gatekeeper-dark" :
+                t === "light" ? "gatekeeper" :
+                    t;
+
+        const savedRaw = localStorage.getItem(KEY);
+        const saved = savedRaw ? mapToKnown(savedRaw) : null;
         const initial = saved || "gatekeeper";
-        if (typeof jtd !== "undefined") {
-            jtd.setTheme(initial);
-        }
+
+        if (typeof jtd !== "undefined") jtd.setTheme(initial);
 
         document.addEventListener("DOMContentLoaded", function () {
             const btn = document.getElementById("gk-theme-toggle");
             const icon = document.getElementById("gk-theme-icon");
-            const isDark = () => jtd.getTheme() === "dark";
-            const refreshIcon = () => {
-                icon.textContent = isDark() ? "☀️" : "🌙";
+
+            const isDark = () => {
+                const t = jtd.getTheme() || "";
+                return t === "dark" || t === "gatekeeper-dark" || t.endsWith("-dark");
             };
+
+            const refreshIcon = () => { icon.textContent = isDark() ? "☀️" : "🌙"; };
             refreshIcon();
+
             btn.addEventListener("click", function () {
                 const next = isDark() ? "gatekeeper" : "gatekeeper-dark";
                 jtd.setTheme(next);
