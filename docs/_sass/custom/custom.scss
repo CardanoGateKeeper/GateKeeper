@@ -1,23 +1,29 @@
-/* /docs/_sass/custom/custom.scss */
-:root {
-  /* If you’re using Inter or another font via head include */
-  --jtd-body-font: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-}
+/* Set a global body font if you added it in head_custom.html */
+:root { --jtd-body-font: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
 
-/* Rounded corners for dark/light */
+/* Roundness for GateKeeper vibe */
 .btn, .btn-primary { border-radius: 0.75rem; }
+pre, code, table { border-radius: 0.6rem; }
+table { overflow: hidden; }
 
-/* Card/code in dark mode */
-@media (prefers-color-scheme: dark) {
-  .main-content .card, pre, code, table {
-    border-radius: 0.6rem;
-    border: 1px solid rgba(255,255,255,0.08);
-  }
+/* Accent the active nav link and in-page anchor highlights */
+.site-nav .nav-list-link.active,
+a:focus { box-shadow: inset 0 -2px 0 #9869fe; }
+
+/* Code token accents via Rouge classes */
+.highlight .k,        /* keywords */
+.highlight .kd,
+.highlight .kn,
+.highlight .kp,
+.highlight .kr,
+.highlight .kt,
+.highlight .nb,       /* builtins */
+.highlight .nc,       /* class names */
+.highlight .nf {      /* function names */
+  color: #9869fe;
 }
 
-
-/* Rounded cards & code blocks */
-.main-content .card, pre, code, table { border-radius: 0.6rem; }
-
-/* Gentle table overflow handling */
-table { overflow: hidden; }
+/* Dark mode borders for cards/code */
+@media (prefers-color-scheme: dark) {
+  .main-content .card, pre, code, table { border: 1px solid rgba(255,255,255,0.08); }
+}

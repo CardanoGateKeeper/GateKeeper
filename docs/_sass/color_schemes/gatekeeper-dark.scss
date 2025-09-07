@@ -1,37 +1,24 @@
-/* GateKeeper Dark Mode color scheme for Just the Docs */
+/* GateKeeper Dark Mode color scheme */
+@import "./color_schemes/dark"; /* inherit core dark tokens */
 
-/* Brand (purple accent) */
 $gk-purple-500: #9869fe;   /* primary */
-$gk-purple-400: #b08aff;   /* lighter accent for hover */
-$gk-purple-600: #7a4ed8;   /* darker accent for pressed */
+$gk-purple-600: #7a4ed8;   /* pressed */
+$gk-purple-400: #b08aff;   /* hover */
 
-/* Dark neutrals */
-$gk-dark-900: #0b0d12;   /* page background */
-$gk-dark-800: #12151d;   /* sidebar background */
-$gk-dark-700: #1a1f2a;   /* cards/code blocks */
-$gk-dark-600: #2a3140;   /* borders */
-$gk-dark-500: #3d4556;   /* mid text */
-$gk-dark-400: #5b657a;   /* lighter text */
-$gk-white:    #ffffff;
+$body-background-color: #0b0d12;
+$sidebar-color: #12151d;
 
-/* Theme variables */
-$body-background-color: $gk-dark-900;
-$sidebar-color: $gk-dark-800;
-
-$body-text-color: $gk-white;
-$body-heading-color: $gk-white;
-$nav-child-link-color: $gk-white;
+$body-text-color: #ffffff;
+$body-heading-color: #ffffff;
 
 $link-color: $gk-purple-500;
 $btn-primary-color: $gk-purple-500;
 
-$code-background-color: $gk-dark-700;
-$search-background-color: $gk-dark-800;
+$code-background-color: #1a1f2a;
+$search-background-color: #12151d;
 
-/* Borders & subtle lines */
-$border-color: rgba(255, 255, 255, 0.08);
+$border-color: rgba(255,255,255,0.08);
 
-/* Alerts / callouts */
 $feedback-warning-color: #f5c542;
 $feedback-danger-color:  #e57373;
 $feedback-success-color: #81c784;
