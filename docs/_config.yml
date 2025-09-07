@@ -1,11 +1,9 @@
-# /docs/_config.yml
 title: GateKeeper Docs
 description: Developer and user documentation for the GateKeeper project
 
 remote_theme: just-the-docs/just-the-docs
 color_scheme: gatekeeper
 
-# IMPORTANT for Pages under an org/repo:
 url: https://cardanogatekeeper.github.io
 baseurl: /GateKeeper
 
@@ -20,5 +18,4 @@ aux_links:
   "Open on GitHub":
     - "//github.com/CardanoGateKeeper/GateKeeper"
 
-# Footer (must be plain text—no Ruby interpolation here)
-footer_content: "© 2025 GateKeeper. Built with Jekyll & Just the Docs."
+footer_content: "© Adam Dean & Latheesan Kanesamoorthy. Built with Jekyll & Just the Docs."
