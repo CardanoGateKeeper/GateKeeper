@@ -1,3 +1,9 @@
+---
+layout: default
+title: GateKeeper
+nav_order: 1
+---
+
 # GateKeeper Documentation
 
 Welcome to the official documentation for GateKeeper, an NFT-based ticketing

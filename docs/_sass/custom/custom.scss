@@ -1,0 +1,34 @@
+/* Small extras to align with GateKeeper’s UI feel */
+
+/* Rounded cards & subtle shadows */
+.main-content .card, .main-content .code-example, .main-content .note {
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Links & buttons hover */
+a:hover, .btn:hover {
+  filter: brightness(0.96);
+}
+
+/* Sidebar look */
+.side-bar, .site-nav {
+  border-right: 1px solid $border-color;
+}
+
+/* Headings weight & tracking for a clean, app-like headline */
+h1, h2, h3 {
+  letter-spacing: 0.2px;
+}
+
+/* Code blocks */
+pre, code {
+  border-radius: 0.6rem;
+}
+
+/* Tables */
+table {
+  border-radius: 0.6rem;
+  overflow: hidden;
+}
