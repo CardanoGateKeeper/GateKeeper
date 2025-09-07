@@ -1,0 +1,40 @@
+title: GateKeeper Docs
+description: Developer and user documentation for the GateKeeper project
+remote_theme: just-the-docs/just-the-docs
+color_scheme: gatekeeper
+
+url: https://cardanogatekeeper.github.io
+baseurl: /gatekeeper/ # Update if your Pages URL includes the repo name
+
+# Navigation
+nav_external_links:
+  - title: GateKeeper App
+    url: https://summer-reef-yqev1xyzalx8.vapor-farm-b1.com/
+  - title: GitHub Repo
+    url: https://github.com/cardanogatekeeper/gatekeeper
+
+# Sidebar structure (add your pages under /docs as needed)
+# Each page needs front matter: `nav_order` to control order.
+# Collections example (optional) for versioned or API docs:
+# collections:
+#   guides:
+#     output: true
+# just_the_docs:
+#   collections:
+#     guides:
+#       name: Guides
+#       nav_exclude: false
+
+# Search
+search_enabled: true
+
+# Logo (optional – add the image then uncomment)
+# logo: /assets/img/gatekeeper-logo.svg
+
+# Aux links (top-right)
+aux_links:
+  "Open on GitHub":
+    - "//github.com/cardanogatekeeper/gatekeeper"
+
+# Footer
+footer_content: "© #{Time.now.year} GateKeeper. Built with Jekyll & Just the Docs."
