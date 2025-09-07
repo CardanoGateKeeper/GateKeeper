@@ -1,12 +1,11 @@
 /* GateKeeper color scheme for Just the Docs */
 
-/* ---- Edit these to match your app precisely ---- */
-/* Primary brand (Cardano-like blue). Replace with your exact hex from the app. */
+/* Brand */
 $gk-blue-500: #2E77D0;   /* primary */
 $gk-blue-600: #2269BE;   /* hover/active */
 $gk-blue-700: #1A57A0;   /* focus/pressed */
 
-/* Neutrals (grayscale) */
+/* Neutrals */
 $gk-gray-900: #0F1115;
 $gk-gray-800: #171A21;
 $gk-gray-700: #1F2430;
@@ -18,31 +17,24 @@ $gk-gray-200: #C1C7D0;
 $gk-gray-100: #E6E9EE;
 $gk-white:    #FFFFFF;
 
-/* Text & surface */
+/* Theme variables expected by Just the Docs */
 $body-background-color: $gk-white;
 $sidebar-color: $gk-gray-100;
-$feedback-color: $gk-gray-100;
 
 $body-text-color: #0B1020;
 $body-heading-color: #0B1020;
 $nav-child-link-color: $body-text-color;
 
-/* Brand uses */
 $link-color: $gk-blue-500;
 $btn-primary-color: $gk-blue-500;
+
 $code-background-color: #F6F8FB;
 $search-background-color: $gk-white;
 
 /* Borders & subtle lines */
-$border-color: rgba(0,0,0,0.08);
+$border-color: rgba(0, 0, 0, 0.08);
 
-/* Alerts / callouts (optional fine-tune) */
+/* Alerts / callouts */
 $feedback-warning-color: #FFC107;
 $feedback-danger-color:  #DC3545;
 $feedback-success-color: #219653;
-
-/* Apply */
-$link-color: $gk-blue-500 !important;
-.btn, .btn-primary {
-  border-radius: 0.75rem;
-}
