@@ -6,10 +6,10 @@
 <script>
     (function () {
         const KEY = "gk-theme";
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         const saved = localStorage.getItem(KEY);
-        const initial = saved || (prefersDark ? "gatekeeper-dark" : "gatekeeper");
+        const initial = saved || "gatekeeper"; // default to light if none saved
         if (typeof jtd !== "undefined") jtd.setTheme(initial);
+
         document.addEventListener("DOMContentLoaded", function () {
             const btn = document.getElementById("gk-theme-toggle");
             const icon = document.getElementById("gk-theme-icon");
@@ -19,8 +19,11 @@
             }
 
             refreshIcon();
+
             btn.addEventListener("click", function () {
-                const next = (jtd.getTheme() === "gatekeeper-dark") ? "gatekeeper" : "gatekeeper-dark";
+                const next = (jtd.getTheme() === "gatekeeper-dark")
+                    ? "gatekeeper"
+                    : "gatekeeper-dark";
                 jtd.setTheme(next);
                 localStorage.setItem(KEY, next);
                 refreshIcon();
