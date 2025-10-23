@@ -17,5 +17,5 @@ Welcome to the official documentation for GateKeeper.
 - [Configuration](./configuration.md)
 - [NFT → Ticket Flow](./nft-ticketing-flow.md)
 
-Source: [GitHub Repo](https://github.com/CardanoGateKeeper/GateKeeper/tree/main)  
-Live Demo: [Public App](https://summer-reef-yqev1xyzalx8.vapor-farm-b1.com/)
+Source: [GitHub Repo](https://github.com/CardanoGateKeeper/GateKeeper/tree/main)
+Live App: [Public App](https://app.gatekeeper.fun/)
