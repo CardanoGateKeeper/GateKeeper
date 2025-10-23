@@ -1,0 +1,37 @@
+id: 63344
+name: gatekeeper
+environments:
+  production:
+    memory: 1024
+    cli-memory: 512
+    runtime: docker
+    database: gatekeeper-production
+    storage: vapor-gatekeeper-production-storage
+    domain: app.gatekeeper.fun
+    cache: gatekeeper-redis
+    build:
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader'
+      - 'php artisan optimize'
+      - 'php artisan event:cache'
+      #      - 'php artisan sidecar:deploy --env=production'
+      - 'npm ci && npm run build && rm -rf node_modules'
+    deploy:
+      - 'php artisan sidecar:deploy --activate'
+      - 'php artisan migrate --force'
+  staging:
+    memory: 1024
+    cli-memory: 512
+    runtime: docker
+    database: gatekeeper-staging
+    storage: vapor-gatekeeper-staging-storage
+    domain: staging.gatekeeper.fun
+    cache: gatekeeper-redis
+    build:
+      - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader'
+      - 'php artisan optimize'
+      - 'php artisan event:cache'
+      #      - 'php artisan sidecar:deploy --env=staging'
+      - 'npm ci && npm run build && rm -rf node_modules'
+    deploy:
+      - 'php artisan sidecar:deploy --activate'
+      - 'php artisan migrate --force'
