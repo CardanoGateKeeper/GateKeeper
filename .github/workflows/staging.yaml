@@ -1,4 +1,4 @@
-name: Deploy Staging
+name: Deploy to Staging
 
 on:
   push:
@@ -20,13 +20,6 @@ jobs:
         run: composer global require laravel/vapor-cli
       - name: Install Project Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-#      - name: Require NodeJS
-#        uses: actions/setup-node@v4
-#        with:
-#          node-version: 20
-#          cache: 'npm'
-#      - name: Build Vite Package
-#        run: npm ci && npm run build
       - name: Deploy Environment
         run: vapor deploy staging
         env:
