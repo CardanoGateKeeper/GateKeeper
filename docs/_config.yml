@@ -4,13 +4,13 @@ description: Developer and user documentation for the GateKeeper project
 remote_theme: just-the-docs/just-the-docs
 color_scheme: gatekeeper
 
-url: https://cardanogatekeeper.github.io
-baseurl: /GateKeeper
+url: https://docs.gatekeeper.fun
+baseurl: /
 
 # Top links
 nav_external_links:
   - title: GateKeeper App
-    url: https://summer-reef-yqev1xyzalx8.vapor-farm-b1.com/
+    url: https://app.gatekeeper.fun/
   - title: GitHub Repo
     url: https://github.com/CardanoGateKeeper/GateKeeper
 
