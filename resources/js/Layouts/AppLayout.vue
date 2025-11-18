@@ -4,6 +4,7 @@ import {Head, Link, router} from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import {useTheme} from "vuetify";
 import Banner from "@/Components/Banner.vue";
+import NetworkNotice from "@/Components/NetworkNotice.vue";
 
 defineProps({
   title: String,
@@ -66,121 +67,123 @@ footer a {
 <template>
   <Head :title="title"/>
   <v-app>
-    <v-toolbar class="d-flex flex-row" color="transparent">
-      <v-app-bar-nav-icon
-        @click.stop="showingNavigation = !showingNavigation"></v-app-bar-nav-icon>
-      <v-toolbar-title class="flex-0-1">
-        <Link :href="route('dashboard')">
-          <ApplicationMark/>
-        </Link>
-      </v-toolbar-title>
-      <v-toolbar-items class="flex-fill">
-        <v-btn :href="route('dashboard')"
-               :active="route().current('dashboard')">Dashboard
-        </v-btn>
-        <v-btn :href="route('manage-event.index')"
-               :active="$page.component.startsWith('ManageEvent')">Events
-        </v-btn>
-      </v-toolbar-items>
-      <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <v-btn @click="toggleTheme">
-          <v-icon
-            :icon="theme.global.current.value.dark ? 'mdi-weather-sunny' : 'mdi-weather-night'"/>
-        </v-btn>
-        <v-menu v-if="$page.props.jetstream.hasTeamFeatures">
-          <template v-slot:activator="{ props }">
-            <v-btn color="secondary" v-bind="props"
-                   :active="route().current('teams.show', $page.props.auth.user.current_team)">
-              <template v-slot:prepend>
-                <v-avatar>
-                  <v-img
-                    :src="$page.props.auth.user.current_team.profile_photo_url"/>
-                </v-avatar>
-              </template>
-              {{ $page.props.auth.user.current_team.name }}
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-subheader>Manage Team</v-list-subheader>
-            <v-list-item
-              :href="route('teams.show', $page.props.auth.user.current_team)">
-              <v-list-item-title>Team Settings</v-list-item-title>
-            </v-list-item>
-            <v-list-item v-if="$page.props.jetstream.canCreateTeams"
-                         :href="route('teams.create')">
-              <v-list-item-title>Create New Team
-              </v-list-item-title>
-            </v-list-item>
-            <template
-              v-if="$page.props.auth.user.all_teams.length > 1">
-              <v-divider></v-divider>
-              <v-list-subheader>Switch Team</v-list-subheader>
-              <v-list-item
-                v-for="team in $page.props.auth.user.all_teams"
-                :key="team.id" @click="switchToTeam(team)">
-                <template v-slot:append
-                          v-if="team.id == $page.props.auth.user.current_team_id">
-                  <v-icon icon="mdi-check-circle-outline"/>
-                </template>
+    <NetworkNotice />
+
+    <v-main>
+      <v-toolbar class="d-flex flex-row" color="transparent">
+        <v-app-bar-nav-icon
+          @click.stop="showingNavigation = !showingNavigation"></v-app-bar-nav-icon>
+        <v-toolbar-title class="flex-0-1">
+          <Link :href="route('dashboard')">
+            <ApplicationMark/>
+          </Link>
+        </v-toolbar-title>
+        <v-toolbar-items class="flex-fill">
+          <v-btn :href="route('dashboard')"
+                 :active="route().current('dashboard')">Dashboard
+          </v-btn>
+          <v-btn :href="route('manage-event.index')"
+                 :active="$page.component.startsWith('ManageEvent')">Events
+          </v-btn>
+        </v-toolbar-items>
+        <v-spacer></v-spacer>
+        <v-toolbar-items>
+          <v-btn @click="toggleTheme">
+            <v-icon
+              :icon="theme.global.current.value.dark ? 'mdi-weather-sunny' : 'mdi-weather-night'"/>
+          </v-btn>
+          <v-menu v-if="$page.props.jetstream.hasTeamFeatures">
+            <template v-slot:activator="{ props }">
+              <v-btn color="secondary" v-bind="props"
+                     :active="route().current('teams.show', $page.props.auth.user.current_team)">
                 <template v-slot:prepend>
                   <v-avatar>
-                    <v-img :src="team.profile_photo_url"
-                           :alt="team.name"/>
+                    <v-img
+                      :src="$page.props.auth.user.current_team.profile_photo_url"/>
                   </v-avatar>
                 </template>
-                <v-list-item-title>{{
-                    team.name
-                  }}
+                {{ $page.props.auth.user.current_team.name }}
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-subheader>Manage Team</v-list-subheader>
+              <v-list-item
+                :href="route('teams.show', $page.props.auth.user.current_team)">
+                <v-list-item-title>Team Settings</v-list-item-title>
+              </v-list-item>
+              <v-list-item v-if="$page.props.jetstream.canCreateTeams"
+                           :href="route('teams.create')">
+                <v-list-item-title>Create New Team
                 </v-list-item-title>
               </v-list-item>
+              <template
+                v-if="$page.props.auth.user.all_teams.length > 1">
+                <v-divider></v-divider>
+                <v-list-subheader>Switch Team</v-list-subheader>
+                <v-list-item
+                  v-for="team in $page.props.auth.user.all_teams"
+                  :key="team.id" @click="switchToTeam(team)">
+                  <template v-slot:append
+                            v-if="team.id == $page.props.auth.user.current_team_id">
+                    <v-icon icon="mdi-check-circle-outline"/>
+                  </template>
+                  <template v-slot:prepend>
+                    <v-avatar>
+                      <v-img :src="team.profile_photo_url"
+                             :alt="team.name"/>
+                    </v-avatar>
+                  </template>
+                  <v-list-item-title>{{
+                      team.name
+                    }}
+                  </v-list-item-title>
+                </v-list-item>
+              </template>
+            </v-list>
+          </v-menu>
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn color="primary" v-bind="props"
+                     :active="route().current('profile.show') || route().current('api-tokens.index')">
+                <template v-slot:prepend
+                          v-if="$page.props.jetstream.managesProfilePhotos">
+                  <v-avatar>
+                    <v-img
+                      :src="$page.props.auth.user.profile_photo_url"
+                      :alt="$page.props.auth.user.name"/>
+                  </v-avatar>
+                </template>
+                {{ $page.props.auth.user.name }}
+              </v-btn>
             </template>
-          </v-list>
-        </v-menu>
-        <v-menu>
-          <template v-slot:activator="{ props }">
-            <v-btn color="primary" v-bind="props"
-                   :active="route().current('profile.show') || route().current('api-tokens.index')">
-              <template v-slot:prepend
-                        v-if="$page.props.jetstream.managesProfilePhotos">
-                <v-avatar>
-                  <v-img
-                    :src="$page.props.auth.user.profile_photo_url"
-                    :alt="$page.props.auth.user.name"/>
-                </v-avatar>
-              </template>
-              {{ $page.props.auth.user.name }}
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-subheader>Manage Account</v-list-subheader>
-            <v-list-item :href="route('profile.show')"
-                         :active="route().current('profile.show')">
-              <template v-slot:prepend>
-                <v-icon icon="mdi-account"/>
-              </template>
-              <v-list-item-title>Profile</v-list-item-title>
-            </v-list-item>
-            <v-list-item :href="route('api-tokens.index')"
-                         :active="route().current('api-tokens.index')"
-                         v-if="$page.props.jetstream.hasApiFeatures">
-              <template v-slot:prepend>
-                <v-icon icon="mdi-api"/>
-              </template>
-              <v-list-item-title>API Tokens</v-list-item-title>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item @click="logout">
-              <template v-slot:prepend>
-                <v-icon icon="mdi-logout"/>
-              </template>
-              <v-list-item-title>Logout</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </v-toolbar-items>
-    </v-toolbar>
-    <v-main>
+            <v-list>
+              <v-list-subheader>Manage Account</v-list-subheader>
+              <v-list-item :href="route('profile.show')"
+                           :active="route().current('profile.show')">
+                <template v-slot:prepend>
+                  <v-icon icon="mdi-account"/>
+                </template>
+                <v-list-item-title>Profile</v-list-item-title>
+              </v-list-item>
+              <v-list-item :href="route('api-tokens.index')"
+                           :active="route().current('api-tokens.index')"
+                           v-if="$page.props.jetstream.hasApiFeatures">
+                <template v-slot:prepend>
+                  <v-icon icon="mdi-api"/>
+                </template>
+                <v-list-item-title>API Tokens</v-list-item-title>
+              </v-list-item>
+              <v-divider></v-divider>
+              <v-list-item @click="logout">
+                <template v-slot:prepend>
+                  <v-icon icon="mdi-logout"/>
+                </template>
+                <v-list-item-title>Logout</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-toolbar-items>
+      </v-toolbar>
       <v-container fluid>
         <header class="py-16 text-center">
           <slot name="header"></slot>

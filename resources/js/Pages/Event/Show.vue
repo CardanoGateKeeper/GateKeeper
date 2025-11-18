@@ -14,7 +14,7 @@ import {
   TransactionMetadatum, TransactionWitnessSet,
   Value, Vkeywitnesses
 } from "@emurgo/cardano-serialization-lib-asmjs";
-import {onMounted, ref, watch} from 'vue'
+import {onMounted, ref, reactive} from 'vue'
 import {useTheme} from "vuetify";
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import {bech32} from "bech32";
@@ -22,6 +22,22 @@ import blake2b from "blake2b";
 import Koios from "@/Plugins/Koios.js";
 import CardanoTxn from "@/Plugins/CardanoTxn.js";
 import TicketQrCode from "@/Pages/Event/Partials/TicketQrCode.vue";
+import axios from 'axios';
+import AppHeader from "@/Components/AppHeader.vue"; // uses your bootstrap config
+
+const snackbar = reactive({
+  show: false,
+  message: '',
+  color: 'info',   // 'success' | 'warning' | 'error' | 'info'
+  timeout: 6000,
+});
+
+function showSnackbar(message, color = 'info', timeout = 6000) {
+  snackbar.message = message;
+  snackbar.color = color;
+  snackbar.timeout = timeout;
+  snackbar.show = true;
+}
 
 const koios_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyIjoic3Rha2UxdXk1Nm5uN3c1OGRyNWsyOG1mcnhnaHBuZ25uNHo0N2pkcGdwOW1ldXZncDdrNXFtaHljbnAiLCJleHAiOjE3NTA0NDIxMjksInRpZXIiOjEsInByb2pJRCI6ImdhdGVrZWVwZXJfZGV2ZWxvcG1lbnQifQ.MdJeU_o85Z8OG51cNRijbcdD78S7vmbrXc9pIA6u-oY";
 
@@ -31,19 +47,19 @@ const props = defineProps({
 
 const modal = ref({
   connectWallet: false,
-  showTicket:    false
+  showTicket: false
 })
 
 const cardano = ref({
-  hasCardano:    ref(false),
-  loading:       ref(true),
-  attempts:      ref(10),
-  status:        ref('loading'),
-  wallets:       [],
-  connected:     null,
-  connection:    null,
+  hasCardano: ref(false),
+  loading: ref(true),
+  attempts: ref(10),
+  status: ref('loading'),
+  wallets: [],
+  connected: null,
+  connection: null,
   hardware_mode: ref(false),
-  network_mode:  null,
+  network_mode: null,
 });
 
 const is_valid_wallet = (name) => {
@@ -103,19 +119,19 @@ const find_wallets = () => {
       cardano.value.hasCardano = true;
 
       Object.keys(window.cardano)
-            .forEach((name) => {
+        .forEach((name) => {
 
 
-              if (!is_valid_wallet(name)) {
-                return;
-              }
+          if (!is_valid_wallet(name)) {
+            return;
+          }
 
-              const wallet = window.cardano[name];
+          const wallet = window.cardano[name];
 
-              if (!cardano.value.wallets.includes(wallet)) {
-                cardano.value.wallets.push(wallet);
-              }
-            });
+          if (!cardano.value.wallets.includes(wallet)) {
+            cardano.value.wallets.push(wallet);
+          }
+        });
 
     }
 
@@ -164,21 +180,21 @@ const check_balance = async () => {
     wallet.assets[policy.hash] = [];
     const policy_hash = ScriptHash.from_bytes(fromHex(policy.hash));
     const policy_assets = wallet.balance.multiasset()
-                                .get(policy_hash);
+      .get(policy_hash);
 
     if (policy_assets === undefined) {
       return;
     }
 
     for (let i = 0; i < policy_assets.keys()
-                                     .len(); i++) {
+      .len(); i++) {
       const Asset = policy_assets.keys()
-                                 .get(i);
+        .get(i);
       const AssetName = toAscii(Asset.name());
       const asset = {
-        name:      AssetName,
+        name: AssetName,
         policy_id: policy.hash,
-        asset_id:  toHex(Asset.name()),
+        asset_id: toHex(Asset.name()),
       };
       make_fingerprint(asset);
       wallet.assets[policy.hash].push(asset);
@@ -203,12 +219,12 @@ const fromHex = (string) => {
 
 const toHex = (bytes) => {
   return Buffer.from(bytes)
-               .toString("hex");
+    .toString("hex");
 }
 
 const toAscii = (bytes) => {
   return Buffer.from(bytes)
-               .toString("ascii");
+    .toString("ascii");
 }
 
 const generate_ticket = async (asset) => {
@@ -224,13 +240,14 @@ const generate_ticket = async (asset) => {
   try {
     ticket_nonce = await axios.post(route('ticket.store'), {
       event_uuid: props.event.uuid,
-      stake_key:  stake_bech32,
-      policy_id:  asset.policy_id,
-      asset_id:   asset.asset_id
+      stake_key: stake_bech32,
+      policy_id: asset.policy_id,
+      asset_id: asset.asset_id
     });
 
     console.log(`Ticket Nonce:`, ticket_nonce);
   } catch (e) {
+    showSnackbar(e.response.data.message, "error");
     console.error(`Couldn't get a nonce!`, e);
     cardano.value.connected.busy = false;
     return false;
@@ -279,9 +296,9 @@ const generate_ticket = async (asset) => {
     try {
       ticket_validation = await axios.put(route('ticket.update', ticket_nonce.data), {
         event_uuid: props.event.uuid,
-        stake_key:  stake_bech32,
-        policy_id:  asset.policy_id,
-        asset_id:   asset.asset_id,
+        stake_key: stake_bech32,
+        policy_id: asset.policy_id,
+        asset_id: asset.asset_id,
         nonce,
         signature
       });
@@ -332,7 +349,7 @@ const createTxn = async (stake_key, nonce) => {
 
   const reward_address = RewardAddress.from_address(stake_key);
   const reward_keyhash = reward_address.payment_cred()
-                                       .to_keyhash();
+    .to_keyhash();
 
   const tx_certs = Certificates.new();
   tx_certs.add(
@@ -392,6 +409,7 @@ header {
   <GuestLayout title="Show Event">
     <template #header>
       <header class="pb-16 px-8 text-start">
+        <AppHeader />
         <v-toolbar class="d-flex flex-row pb-16" color="transparent">
           <v-spacer></v-spacer>
           <v-toolbar-items>
@@ -559,5 +577,23 @@ header {
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar
+      v-model="snackbar.show"
+      :color="snackbar.color"
+      :timeout="snackbar.timeout"
+      location="top end"
+      variant="elevated"
+    >
+      <div class="d-flex align-center justify-space-between ga-4">
+        <span>{{ snackbar.message }}</span>
+
+        <v-btn
+          icon="mdi-close"
+          size="small"
+          variant="text"
+          @click="snackbar.show = false"
+        />
+      </div>
+    </v-snackbar>
   </GuestLayout>
 </template>

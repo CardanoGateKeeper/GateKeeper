@@ -1,7 +1,8 @@
 <script setup>
 import {onMounted, ref} from 'vue';
-import {Head, Link, router} from '@inertiajs/vue3';
+import {Head} from '@inertiajs/vue3';
 import {useTheme} from "vuetify";
+import NetworkNotice from "@/Components/NetworkNotice.vue";
 
 defineProps({
   title: String
@@ -23,6 +24,8 @@ onMounted(() => {
   localTheme.value = localStorage.getItem('gatekeeper:theme') ?? 'light';
   theme.global.name.value = localTheme.value;
 })
+
+
 </script>
 <style>
 
@@ -30,7 +33,7 @@ onMounted(() => {
 <template>
   <Head :title="title"></Head>
   <v-app>
-<!--    <v-toolbar class="d-flex flex-row" color="transparent"></v-toolbar>-->
+    <NetworkNotice />
     <v-main>
       <slot name="header"></slot>
       <slot></slot>
