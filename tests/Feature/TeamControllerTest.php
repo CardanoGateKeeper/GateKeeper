@@ -19,11 +19,11 @@ class TeamControllerTest extends TestCase
 
     $this->actingAs($user);
 
-    $this->withoutExceptionHandling();
+//    $this->withoutExceptionHandling();
 
     $response = $this->get(route('teams.show', $team));
 
-    $response->dump();
+//    $response->dump();
 
     $response->assertOk();
 
