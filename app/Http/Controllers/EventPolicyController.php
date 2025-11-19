@@ -10,20 +10,6 @@ use Throwable;
 class EventPolicyController extends Controller {
 
     /**
-     * Display a listing of the resource.
-     */
-    public function index(Event $event) {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Event $event) {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request, string $eventUUID) {
@@ -46,27 +32,6 @@ class EventPolicyController extends Controller {
         }
 
         return back(303);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Event $event, Policy $policy) {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Event $event, Policy $policy) {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Event $event, Policy $policy) {
-        //
     }
 
     /**

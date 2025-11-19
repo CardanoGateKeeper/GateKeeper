@@ -19,8 +19,8 @@ class TicketFactory extends Factory
     return [
       'event_id' => Event::factory(),
       'policy_id' => Policy::factory(),
-      'asset_id' => $this->faker->bothify(str_repeat('#', 40)), // adjust length as needed
-      'stake_key' => $this->faker->bothify(str_repeat('#', 40)),
+      'asset_id' => $this->faker->bothify(str_repeat('#', 32)), // adjust length as needed
+      'stake_key' => $this->faker->bothify(str_repeat('#', 32)),
       'signature_nonce' => random_bytes(16), // binary(16)
       'ticket_nonce' => random_bytes(16), // binary(16), nullable in schema but we'll fill it
       'signature' => null,

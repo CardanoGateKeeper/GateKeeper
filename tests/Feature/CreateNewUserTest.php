@@ -1,13 +1,12 @@
 <?php
 
-namespace Tests\Unit\Controller;
+namespace Tests\Feature;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
-use App\Models\Policy;
 
 class CreateNewUserTest extends TestCase
 {

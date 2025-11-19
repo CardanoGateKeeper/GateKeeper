@@ -2,27 +2,30 @@
 
 namespace Tests\Feature;
 
-use App\Models\Team;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\Policy;
 
 class TeamPolicyControllerTest extends TestCase
 {
   use RefreshDatabase;
 
+  /** @test */
   public function test_store_creates_policy_for_team()
   {
-    $team = Team::factory()->create();
+    $user = User::factory()->withPersonalTeam()->create();
+    $team = $user->currentTeam;
+
+    $this->actingAs($user);
 
     $data = [
-      'name' => 'Test Policy',
-      'description' => 'Sample description',
-      // Add all required fields of StorePolicyRequest validation here
+      'name' => 'Team Policy Test Policy',
+      'hash' => bin2hex(random_bytes(28)),
+      'team_id' => $team->id,
+      'user_id' => $team->user_id,
     ];
 
-    $response = $this->post(route('teams.policies.store', $team), $data);
-
+    $response = $this->post(route('team.policy.store', $team), $data);
     $response->assertStatus(303);
     $this->assertDatabaseHas('policies', [
       'team_id' => $team->id,
