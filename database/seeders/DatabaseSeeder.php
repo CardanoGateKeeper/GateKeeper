@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
   {
     // Any global seeding goes here, e.g. default roles/permissions/user, etc.
 
-    if (app()->environment('local')) {
+    if (app()->environment('local') || app()->environment('staging')) {
       $this->call(DemoEventSeeder::class);
     }
   }
