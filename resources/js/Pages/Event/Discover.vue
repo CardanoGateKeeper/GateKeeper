@@ -103,6 +103,7 @@ const format_wallet_name = (wallet) => {
 };
 
 const find_wallets = () => {
+  const target_wallet = localStorage.getItem('connected_wallet');
   let loop = setInterval(() => {
     if (cardano.value.attempts <= 0) {
       if (cardano.value.wallets.length) {
@@ -118,12 +119,15 @@ const find_wallets = () => {
     if (window.cardano !== undefined) {
       cardano.value.hasCardano = true;
 
-      Object.keys(window.cardano).forEach((name) => {
+      Object.keys(window.cardano).forEach(async (name) => {
         if (!is_valid_wallet(name)) {
           return;
         }
 
         const wallet = window.cardano[name];
+        if (wallet.name === target_wallet && !cardano.value.connected) {
+          await connect(wallet);
+        }
 
         if (!cardano.value.wallets.includes(wallet)) {
           cardano.value.wallets.push(wallet);
@@ -143,6 +147,7 @@ const connect = async (wallet) => {
     wallet.busy = false;
     return;
   }
+  localStorage.setItem('connected_wallet', wallet.name);
   cardano.value.connected = wallet;
   wallet.busy = false;
   modal.value.connectWallet = false;
@@ -156,7 +161,7 @@ const disconnect = () => {
   cardano.value.connection = null;
   cardano.value.network_mode = null;
   walletPolicies.value = [];
-  events.value = [];
+  localStorage.removeItem('connected_wallet');
 };
 
 const check_balance = async () => {
@@ -257,7 +262,7 @@ onMounted(async () => {
   <GuestLayout title="Discover Events">
     <template #header>
       <header class="discover-header px-8">
-        <AppHeader />
+        <AppHeader/>
         <div class="py-16 d-flex align-center my-4">
           <div>
             <h1>Discover Events</h1>
