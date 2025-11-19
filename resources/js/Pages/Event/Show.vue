@@ -293,10 +293,10 @@ const generate_ticket = async (asset) => {
 
   if (ticket_validation) {
     modal.value.showTicket = true;
-    qr_image_value = asset.fingerprint ? route('image.show', {asset_key: asset.fingerprint}) : '';
+    // qr_image_value = asset.fingerprint ? route('image.show', {asset_key: asset.fingerprint}) : '';
+    qr_image_value = '';
     qr_code_value = ticket_validation.data.qr_value;
   }
-
 
   cardano.value.connected.busy = false;
 }
