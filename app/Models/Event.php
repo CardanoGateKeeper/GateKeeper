@@ -84,8 +84,6 @@ class Event extends Model
       ...$this->checkins,
       ...$this->checkouts
     ]);
-//      return $this->checkins
-//        ->merge($this->checkouts);
   }
 
   public function policies(): BelongsToMany

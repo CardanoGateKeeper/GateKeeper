@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Fortify;
+namespace Tests\Feature;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -8,7 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Rules\Password as PasswordRule; // Fortify’s rule
 use App\Models\User;
 
-class UpdateUserPassword
+class UpdateUserPasswordTest
 {
   /**
    * Validate and update the given user's password.

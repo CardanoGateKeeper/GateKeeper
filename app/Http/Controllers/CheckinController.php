@@ -48,7 +48,7 @@
         //       throughout an event
         return response()->json([
           'message' => 'Ticket has already been checked in!'
-        ], 401);
+        ], 400);
       }
 
       // Since we've arrive here it is probably safe to insert the "checkin"

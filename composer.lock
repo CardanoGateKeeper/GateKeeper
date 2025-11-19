@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fbf31c0df12e2d743ca97cd011c1706a",
+    "content-hash": "e3b6bccf3ba55f6dc91406608829884a",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -340,6 +340,57 @@
                 }
             ],
             "time": "2023-12-11T17:09:12+00:00"
+        },
+        {
+            "name": "cardano-php/cip8-verifier",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cardano-php/cip8-verifier.git",
+                "reference": "e78b0b0c10a452399ebf0adbf53e192ef42acfa2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cardano-php/cip8-verifier/zipball/e78b0b0c10a452399ebf0adbf53e192ef42acfa2",
+                "reference": "e78b0b0c10a452399ebf0adbf53e192ef42acfa2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-sodium": "*",
+                "php": ">=8.0",
+                "spomky-labs/cbor-php": "^3.1"
+            },
+            "require-dev": {
+                "pestphp/pest": "^3.8",
+                "phpstan/phpstan": "^1.10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CardanoPhp\\CIP8Verifier\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Latheesan Kanesamoorthy"
+                }
+            ],
+            "description": "A PHP library to verify Cardano CIP-8 signed messages.",
+            "keywords": [
+                "cardano",
+                "cip8",
+                "signature",
+                "verification"
+            ],
+            "support": {
+                "issues": "https://github.com/cardano-php/cip8-verifier/issues",
+                "source": "https://github.com/cardano-php/cip8-verifier/tree/v1.0.0"
+            },
+            "time": "2025-07-31T03:42:53+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -4935,6 +4986,77 @@
                 }
             ],
             "time": "2025-11-03T20:16:13+00:00"
+        },
+        {
+            "name": "spomky-labs/cbor-php",
+            "version": "3.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Spomky-Labs/cbor-php.git",
+                "reference": "2a5fb86aacfe1004611370ead6caa2bfc88435d0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Spomky-Labs/cbor-php/zipball/2a5fb86aacfe1004611370ead6caa2bfc88435d0",
+                "reference": "2a5fb86aacfe1004611370ead6caa2bfc88435d0",
+                "shasum": ""
+            },
+            "require": {
+                "brick/math": "^0.9|^0.10|^0.11|^0.12|^0.13|^0.14",
+                "ext-mbstring": "*",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "ext-json": "*",
+                "roave/security-advisories": "dev-latest",
+                "symfony/error-handler": "^6.4|^7.1|^8.0",
+                "symfony/var-dumper": "^6.4|^7.1|^8.0"
+            },
+            "suggest": {
+                "ext-bcmath": "GMP or BCMath extensions will drastically improve the library performance. BCMath extension needed to handle the Big Float and Decimal Fraction Tags",
+                "ext-gmp": "GMP or BCMath extensions will drastically improve the library performance"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CBOR\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florent Morselli",
+                    "homepage": "https://github.com/Spomky"
+                },
+                {
+                    "name": "All contributors",
+                    "homepage": "https://github.com/Spomky-Labs/cbor-php/contributors"
+                }
+            ],
+            "description": "CBOR Encoder/Decoder for PHP",
+            "keywords": [
+                "Concise Binary Object Representation",
+                "RFC7049",
+                "cbor"
+            ],
+            "support": {
+                "issues": "https://github.com/Spomky-Labs/cbor-php/issues",
+                "source": "https://github.com/Spomky-Labs/cbor-php/tree/3.2.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Spomky",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/FlorentMorselli",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2025-11-13T13:00:34+00:00"
         },
         {
             "name": "symfony/console",

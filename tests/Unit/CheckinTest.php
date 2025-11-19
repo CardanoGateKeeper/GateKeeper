@@ -1,11 +1,10 @@
 <?php
 
-namespace Tests\Unit\Model;
+namespace Tests\Unit;
 
 use App\Models\Checkin;
 use App\Models\Ticket;
 use App\Models\User;
-use App\Models\Event;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

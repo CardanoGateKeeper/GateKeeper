@@ -43,7 +43,7 @@
         // then we can't very well add a new checkout can we?
         return response()->json([
           'message' => 'Ticket has not been checked in!'
-        ], 401);
+        ], 400);
       }
 
       // Since we've arrive here it is probably safe to insert the "checkin"

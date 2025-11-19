@@ -1,15 +1,15 @@
 <?php
 
-namespace Tests\Unit\Controller;
+namespace Tests\Feature;
 
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class UpdateUserProfileInformationTest extends TestCase
 {
-  use RefreshDatabase;
+  use DatabaseMigrations;
 
   public function test_update_profile_information()
   {
