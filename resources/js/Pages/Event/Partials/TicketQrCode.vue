@@ -22,7 +22,7 @@ const qr_options = {
   qrOptions:            {
     typeNumber:           0,
     mode:                 'Byte',
-    errorCorrectionlevel: 'Q'
+    errorCorrectionlevel: 'L'
   },
   imageOptions:         {
     hideBackgroundDots: true,
@@ -62,14 +62,14 @@ onMounted(async () => {
 });
 
 watch(() => props, async (newValue) => {
-  const timestamp = new Date().getTime();
-  const img_path = `${newValue.image}?timestamp=${timestamp}`;
+  // const timestamp = new Date().getTime();
+  // const img_path = `${newValue.image}?timestamp=${timestamp}`;
   const data_uri = newValue.data;
 
   qrCode.update({
     ...qr_options,
     data:  data_uri,
-    image: img_path
+    // image: img_path
   });
 
   qrCode.append(qr_code.value);
