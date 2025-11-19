@@ -3,11 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Event;
-use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\Policy;
 
 class EventAdminControllerTest extends TestCase
 {
@@ -20,7 +18,7 @@ class EventAdminControllerTest extends TestCase
     $this->actingAs($user);
 
     $payload = [
-      'uuid' => (string) \Str::uuid(),
+      'uuid' => (string)\Str::uuid(),
       'team_id' => $user->currentTeam->id,
       'user_id' => $user->id,
       'name' => 'Test Event',
@@ -32,6 +30,7 @@ class EventAdminControllerTest extends TestCase
       'location' => 'Test City',
       'event_start' => '10:00',
       'event_end' => '12:00',
+      'is_public' => true,
     ];
 
     $response = $this->post(route('manage-event.store'), $payload);
@@ -39,6 +38,7 @@ class EventAdminControllerTest extends TestCase
 
     $this->assertDatabaseHas('events', [
       'name' => 'Test Event',
+      'user_id' => $user->id,
       'team_id' => $user->currentTeam->id,
     ]);
   }
@@ -47,7 +47,7 @@ class EventAdminControllerTest extends TestCase
   public function user_can_update_event()
   {
     $user = User::factory()->withPersonalTeam()->create();
-    $this->actingAs($user);
+    $this->withSession([])->actingAs($user);
 
     $event = Event::factory()->create([
       'team_id' => $user->currentTeam->id,
@@ -69,7 +69,6 @@ class EventAdminControllerTest extends TestCase
 
     $response = $this->put(route('manage-event.update', $event->uuid), $payload);
     $response->assertRedirect(route('manage-event.edit', $event->uuid));
-
     $this->assertDatabaseHas('events', [
       'uuid' => $event->uuid,
       'name' => 'Updated Event Name',

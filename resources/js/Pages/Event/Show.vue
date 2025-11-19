@@ -14,7 +14,7 @@ import {
   TransactionMetadatum, TransactionWitnessSet,
   Value, Vkeywitnesses
 } from "@emurgo/cardano-serialization-lib-asmjs";
-import {onMounted, ref, watch} from 'vue'
+import {onMounted, ref, reactive} from 'vue'
 import {useTheme} from "vuetify";
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import {bech32} from "bech32";
@@ -22,6 +22,22 @@ import blake2b from "blake2b";
 import Koios from "@/Plugins/Koios.js";
 import CardanoTxn from "@/Plugins/CardanoTxn.js";
 import TicketQrCode from "@/Pages/Event/Partials/TicketQrCode.vue";
+import axios from 'axios';
+import AppHeader from "@/Components/AppHeader.vue"; // uses your bootstrap config
+
+const snackbar = reactive({
+  show: false,
+  message: '',
+  color: 'info',   // 'success' | 'warning' | 'error' | 'info'
+  timeout: 6000,
+});
+
+function showSnackbar(message, color = 'info', timeout = 6000) {
+  snackbar.message = message;
+  snackbar.color = color;
+  snackbar.timeout = timeout;
+  snackbar.show = true;
+}
 
 const koios_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyIjoic3Rha2UxdXk1Nm5uN3c1OGRyNWsyOG1mcnhnaHBuZ25uNHo0N2pkcGdwOW1ldXZncDdrNXFtaHljbnAiLCJleHAiOjE3NTA0NDIxMjksInRpZXIiOjEsInByb2pJRCI6ImdhdGVrZWVwZXJfZGV2ZWxvcG1lbnQifQ.MdJeU_o85Z8OG51cNRijbcdD78S7vmbrXc9pIA6u-oY";
 
@@ -31,19 +47,19 @@ const props = defineProps({
 
 const modal = ref({
   connectWallet: false,
-  showTicket:    false
+  showTicket: false
 })
 
 const cardano = ref({
-  hasCardano:    ref(false),
-  loading:       ref(true),
-  attempts:      ref(10),
-  status:        ref('loading'),
-  wallets:       [],
-  connected:     null,
-  connection:    null,
+  hasCardano: ref(false),
+  loading: ref(true),
+  attempts: ref(10),
+  status: ref('loading'),
+  wallets: [],
+  connected: null,
+  connection: null,
   hardware_mode: ref(false),
-  network_mode:  null,
+  network_mode: null,
 });
 
 const is_valid_wallet = (name) => {
@@ -87,6 +103,7 @@ const format_wallet_name = (wallet) => {
 }
 
 const find_wallets = () => {
+  const target_wallet = localStorage.getItem('connected_wallet');
   let loop = setInterval(() => {
     if (cardano.value.attempts <= 0) {
       if (cardano.value.wallets.length) {
@@ -103,19 +120,22 @@ const find_wallets = () => {
       cardano.value.hasCardano = true;
 
       Object.keys(window.cardano)
-            .forEach((name) => {
+        .forEach(async (name) => {
 
 
-              if (!is_valid_wallet(name)) {
-                return;
-              }
+          if (!is_valid_wallet(name)) {
+            return;
+          }
 
-              const wallet = window.cardano[name];
+          const wallet = window.cardano[name];
+          if (wallet.name === target_wallet && !cardano.value.connected) {
+            await connect(wallet);
+          }
 
-              if (!cardano.value.wallets.includes(wallet)) {
-                cardano.value.wallets.push(wallet);
-              }
-            });
+          if (!cardano.value.wallets.includes(wallet)) {
+            cardano.value.wallets.push(wallet);
+          }
+        });
 
     }
 
@@ -131,17 +151,19 @@ const connect = async (wallet) => {
     wallet.busy = false;
     return;
   }
+  localStorage.setItem('connected_wallet', wallet.name);
   cardano.value.connected = wallet;
   wallet.busy = false;
   modal.value.connectWallet = false;
   cardano.value.network_mode = await cardano.value.connection.getNetworkId();
-  check_balance();
+  await check_balance();
 }
 
 const disconnect = () => {
   cardano.value.connected = null;
   cardano.value.connection = null;
   cardano.value.network_mode = null;
+  localStorage.removeItem('connected_wallet');
 }
 
 const check_balance = async () => {
@@ -164,21 +186,27 @@ const check_balance = async () => {
     wallet.assets[policy.hash] = [];
     const policy_hash = ScriptHash.from_bytes(fromHex(policy.hash));
     const policy_assets = wallet.balance.multiasset()
-                                .get(policy_hash);
+      .get(policy_hash);
 
     if (policy_assets === undefined) {
       return;
     }
 
     for (let i = 0; i < policy_assets.keys()
-                                     .len(); i++) {
+      .len(); i++) {
       const Asset = policy_assets.keys()
-                                 .get(i);
-      const AssetName = toAscii(Asset.name());
+        .get(i);
+      const asset_id = toHex(Asset.name());
+      const asset_ascii = toAscii(Buffer.from(
+        asset_id.startsWith('000de140')
+          ? asset_id.substring(8)
+          : asset_id,
+        "hex"
+      ));
       const asset = {
-        name:      AssetName,
+        name: asset_ascii,
         policy_id: policy.hash,
-        asset_id:  toHex(Asset.name()),
+        asset_id: asset_id,
       };
       make_fingerprint(asset);
       wallet.assets[policy.hash].push(asset);
@@ -203,12 +231,12 @@ const fromHex = (string) => {
 
 const toHex = (bytes) => {
   return Buffer.from(bytes)
-               .toString("hex");
+    .toString("hex");
 }
 
 const toAscii = (bytes) => {
   return Buffer.from(bytes)
-               .toString("ascii");
+    .toString("ascii");
 }
 
 const generate_ticket = async (asset) => {
@@ -224,13 +252,14 @@ const generate_ticket = async (asset) => {
   try {
     ticket_nonce = await axios.post(route('ticket.store'), {
       event_uuid: props.event.uuid,
-      stake_key:  stake_bech32,
-      policy_id:  asset.policy_id,
-      asset_id:   asset.asset_id
+      stake_key: stake_bech32,
+      policy_id: asset.policy_id,
+      asset_id: asset.asset_id
     });
 
     console.log(`Ticket Nonce:`, ticket_nonce);
   } catch (e) {
+    showSnackbar(e.response.data.message, "error");
     console.error(`Couldn't get a nonce!`, e);
     cardano.value.connected.busy = false;
     return false;
@@ -240,35 +269,7 @@ const generate_ticket = async (asset) => {
   let signature;
 
   try {
-    if (!cardano.value.hardware_mode) {
-      signature = await signData(stake_address_cbor, nonce, asset.policy_id, asset.asset_id);
-    } else {
-      const txn = await createTxn(stake_key, nonce);
-      const witness = await cardano.value.connection.signTx(txn.to_hex(), true);
-
-      const witnessSet = TransactionWitnessSet.new();
-      const totalVkeys = Vkeywitnesses.new();
-      const addWitness = TransactionWitnessSet.from_bytes(Buffer.from(witness, 'hex'));
-      const addVkeys = addWitness.vkeys();
-      if (addVkeys) {
-        for (let i = 0; i < addVkeys.len(); i++) {
-          totalVkeys.add(addVkeys.get(i));
-        }
-      }
-
-      witnessSet.set_vkeys(totalVkeys);
-      const signedTx = Transaction.new(
-        txn.body(),
-        witnessSet,
-        txn.auxiliary_data()
-      );
-
-
-      signature = {
-        txn: signedTx.to_hex(),
-        witness
-      };
-    }
+    signature = await signData(stake_address_cbor, nonce, asset.policy_id, asset.asset_id);
   } catch (e) {
     console.error(`Ticket Signing Error!`, e);
   }
@@ -279,9 +280,9 @@ const generate_ticket = async (asset) => {
     try {
       ticket_validation = await axios.put(route('ticket.update', ticket_nonce.data), {
         event_uuid: props.event.uuid,
-        stake_key:  stake_bech32,
-        policy_id:  asset.policy_id,
-        asset_id:   asset.asset_id,
+        stake_key: stake_bech32,
+        policy_id: asset.policy_id,
+        asset_id: asset.asset_id,
         nonce,
         signature
       });
@@ -292,10 +293,10 @@ const generate_ticket = async (asset) => {
 
   if (ticket_validation) {
     modal.value.showTicket = true;
-    qr_image_value = asset.fingerprint ? route('image.show', {asset_key: asset.fingerprint}) : '';
+    // qr_image_value = asset.fingerprint ? route('image.show', {asset_key: asset.fingerprint}) : '';
+    qr_image_value = '';
     qr_code_value = ticket_validation.data.qr_value;
   }
-
 
   cardano.value.connected.busy = false;
 }
@@ -303,55 +304,7 @@ const generate_ticket = async (asset) => {
 let qr_code_value = null;
 let qr_image_value = '';
 
-const createTxn = async (stake_key, nonce) => {
-  const params = await Koios.getParameters({
-    project_id: koios_token
-  });
-  const txBuilder = CardanoTxn.prepare({parameters: params});
-
-  try {
-    const metadata_list = MetadataList.new();
-    while (nonce) {
-      if (nonce.length < 64) {
-        metadata_list.add(TransactionMetadatum.new_text(nonce));
-        break;
-      } else {
-        metadata_list.add(TransactionMetadatum.new_text(nonce.substring(0, 64)));
-        nonce = nonce.substring(64);
-      }
-    }
-    txBuilder.add_metadatum(
-      BigNum.from_str('8'),
-      TransactionMetadatum.new_list(
-        metadata_list
-      )
-    );
-  } catch (e) {
-    console.error(`Couldn't add metadata?`, e, nonce);
-  }
-
-  const reward_address = RewardAddress.from_address(stake_key);
-  const reward_keyhash = reward_address.payment_cred()
-                                       .to_keyhash();
-
-  const tx_certs = Certificates.new();
-  tx_certs.add(
-    Certificate.new_stake_delegation(
-      StakeDelegation.new(
-        StakeCredential.from_keyhash(reward_keyhash),
-        Ed25519KeyHash.from_bech32(`pool14wk2m2af7y4gk5uzlsmsunn7d9ppldvcxxa5an9r5ywek8330fg`)
-      )
-    )
-  );
-
-  txBuilder.set_certs(tx_certs);
-  txBuilder.set_fee(BigNum.from_str('0'));
-  txBuilder.set_ttl(1);
-
-  return txBuilder.build_tx();
-}
-
-const signData = async (stake_address, nonce, policy_id, asset_id) => {
+const signData = async (stake_address, nonce) => {
   const payload = cardano.value.connection.signData(stake_address, nonce);
   console.log(`Sign Data Payload`, payload);
   return payload;
@@ -359,20 +312,6 @@ const signData = async (stake_address, nonce, policy_id, asset_id) => {
 
 onMounted(async () => {
   find_wallets();
-  localTheme.value = localStorage.getItem('gatekeeper:theme') ?? 'light';
-  theme.global.name.value = localTheme.value;
-});
-
-const theme = useTheme()
-
-const toggleTheme = () => {
-  const theme_value = theme.global.current.value.dark ? 'light' : 'dark'
-  localStorage.setItem('gatekeeper:theme', theme_value);
-  theme.global.name.value = theme_value;
-}
-
-const localTheme = ref({
-  value: null
 });
 
 const bg_image = 'url(' + props.event.bg_image_url + ')';
@@ -392,15 +331,7 @@ header {
   <GuestLayout title="Show Event">
     <template #header>
       <header class="pb-16 px-8 text-start">
-        <v-toolbar class="d-flex flex-row pb-16" color="transparent">
-          <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-btn @click="toggleTheme">
-              <v-icon
-                :icon="theme.global.current.value.dark ? 'mdi-weather-sunny' : 'mdi-weather-night'"/>
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
+        <AppHeader/>
         <div class="d-flex align-center align-content-center my-16">
           <v-avatar :image="event.profile_photo_url" class="me-4" size="128"/>
           <div>
@@ -462,17 +393,7 @@ header {
                   <v-icon icon="mdi-power"/>
                 </v-btn>
               </div>
-              <br/>
-              <v-switch v-model="cardano.hardware_mode" color="primary"
-                        density="comfortable">
-                <template v-slot:label>
-                  Hardware Wallet Compatibility Mode is {{
-                    cardano.hardware_mode ? 'ON' : 'OFF'
-                  }}
-                </template>
-              </v-switch>
             </div>
-
           </template>
         </div>
       </header>
@@ -559,5 +480,23 @@ header {
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar
+      v-model="snackbar.show"
+      :color="snackbar.color"
+      :timeout="snackbar.timeout"
+      location="top end"
+      variant="elevated"
+    >
+      <div class="d-flex align-center justify-space-between ga-4">
+        <span>{{ snackbar.message }}</span>
+
+        <v-btn
+          icon="mdi-close"
+          size="small"
+          variant="text"
+          @click="snackbar.show = false"
+        />
+      </div>
+    </v-snackbar>
   </GuestLayout>
 </template>

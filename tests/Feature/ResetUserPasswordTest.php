@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Controller;
+namespace Tests\Feature;
 
 use App\Actions\Fortify\ResetUserPassword;
 use App\Models\User;

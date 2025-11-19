@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Model;
+namespace Tests\Unit;
 
 use App\Models\Checkout;
 use App\Models\Ticket;
