@@ -1,0 +1,113 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "http:\/\/localhost"
+        }
+    ],
+    "info": {
+        "name": "Laravel API Documentation",
+        "_postman_id": "d419e499-1c04-4af0-b718-ec6871ba2ad5",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Public API",
+            "description": "",
+            "item": [
+                {
+                    "name": "List public, discoverable events.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/events\/discover",
+                            "query": [
+                                {
+                                    "key": "policy_hashes[][]",
+                                    "value": "",
+                                    "description": "Optional. One or more Cardano policy IDs to filter by.\n                                     Only events that accept at least one of these policies\n                                     will be returned.",
+                                    "disabled": true
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/events\/discover?policy_hashes[][]="
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns upcoming public events along with their associated Cardano policy IDs.\nClients can use this to find events that a connected wallet might qualify for.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"data\": [\n    {\n      \"uuid\": \"8f5fa03d-02c6-49f1-985f-d71544de8919\",\n      \"name\": \"Hydra Launch Party\",\n      \"description\": \"An exclusive Hydra-based launch event with live demos.\",\n      \"location\": \"Las Vegas Convention Center\",\n      \"date\": \"2025-01-24\",\n      \"start\": \"2025-01-24T18:00:00Z\",\n      \"end\": \"2025-01-24T21:00:00Z\",\n      \"policies\": [\n        {\n          \"hash\": \"a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe\",\n          \"name\": \"HOSKY Token\"\n        },\n        {\n          \"hash\": \"40fa2aa65d983e1375f1a7c61ba57c0f0f5b9abc\",\n          \"name\": \"Clay Nation\"\n        }\n      ],\n      \"policy_hashes\": [\n        \"a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe\",\n        \"40fa2aa65d983e1375f1a7c61ba57c0f0f5b9abc\"\n      ]\n    }\n  ]\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Discover public events for a specific policy.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/events\/discover\/policy\/:policyHash",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/events\/discover\/policy\/:policyHash",
+                            "variable": [
+                                {
+                                    "id": "policyHash",
+                                    "key": "policyHash",
+                                    "value": "a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe",
+                                    "description": "The Cardano policy ID to filter by."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns upcoming public events that accept the given Cardano policy ID.\nThis is a convenience wrapper around the main discover endpoint with a single policy filter.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"data\": [\n    {\n      \"uuid\": \"8f5fa03d-02c6-49f1-985f-d71544de8919\",\n      \"name\": \"Hydra Launch Party\",\n      \"description\": \"An exclusive Hydra-based launch event with live demos.\",\n      \"location\": \"Las Vegas Convention Center\",\n      \"date\": \"2025-01-24\",\n      \"start\": \"2025-01-24T18:00:00Z\",\n      \"end\": \"2025-01-24T21:00:00Z\",\n      \"policies\": [\n        {\n          \"hash\": \"a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe\",\n          \"name\": \"HOSKY Token\"\n        }\n      ],\n      \"policy_hashes\": [\n        \"a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe\"\n      ]\n    }\n  ]\n}",
+                            "name": "success"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "noauth"
+    }
+}

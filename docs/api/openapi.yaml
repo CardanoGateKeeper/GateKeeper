@@ -1,0 +1,236 @@
+openapi: 3.0.3
+info:
+  title: 'Laravel API Documentation'
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+tags:
+  -
+    name: 'Public API'
+    description: ''
+paths:
+  /api/events/discover:
+    get:
+      summary: 'List public, discoverable events.'
+      operationId: listPublicDiscoverableEvents
+      description: "Returns upcoming public events along with their associated Cardano policy IDs.\nClients can use this to find events that a connected wallet might qualify for."
+      parameters:
+        -
+          in: query
+          name: 'policy_hashes[]'
+          description: "Optional. One or more Cardano policy IDs to filter by.\n                                     Only events that accept at least one of these policies\n                                     will be returned."
+          example: null
+          required: false
+          schema:
+            type: array
+            description: "Optional. One or more Cardano policy IDs to filter by.\n                                     Only events that accept at least one of these policies\n                                     will be returned."
+            example: null
+            items:
+              type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      uuid: 8f5fa03d-02c6-49f1-985f-d71544de8919
+                      name: 'Hydra Launch Party'
+                      description: 'An exclusive Hydra-based launch event with live demos.'
+                      location: 'Las Vegas Convention Center'
+                      date: '2025-01-24'
+                      start: '2025-01-24T18:00:00Z'
+                      end: '2025-01-24T21:00:00Z'
+                      policies:
+                        -
+                          hash: a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                          name: 'HOSKY Token'
+                        -
+                          hash: 40fa2aa65d983e1375f1a7c61ba57c0f0f5b9abc
+                          name: 'Clay Nation'
+                      policy_hashes:
+                        - a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                        - 40fa2aa65d983e1375f1a7c61ba57c0f0f5b9abc
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        uuid: 8f5fa03d-02c6-49f1-985f-d71544de8919
+                        name: 'Hydra Launch Party'
+                        description: 'An exclusive Hydra-based launch event with live demos.'
+                        location: 'Las Vegas Convention Center'
+                        date: '2025-01-24'
+                        start: '2025-01-24T18:00:00Z'
+                        end: '2025-01-24T21:00:00Z'
+                        policies:
+                          -
+                            hash: a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                            name: 'HOSKY Token'
+                          -
+                            hash: 40fa2aa65d983e1375f1a7c61ba57c0f0f5b9abc
+                            name: 'Clay Nation'
+                        policy_hashes:
+                          - a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                          - 40fa2aa65d983e1375f1a7c61ba57c0f0f5b9abc
+                    items:
+                      type: object
+                      properties:
+                        uuid:
+                          type: string
+                          example: 8f5fa03d-02c6-49f1-985f-d71544de8919
+                        name:
+                          type: string
+                          example: 'Hydra Launch Party'
+                        description:
+                          type: string
+                          example: 'An exclusive Hydra-based launch event with live demos.'
+                        location:
+                          type: string
+                          example: 'Las Vegas Convention Center'
+                        date:
+                          type: string
+                          example: '2025-01-24'
+                        start:
+                          type: string
+                          example: '2025-01-24T18:00:00Z'
+                        end:
+                          type: string
+                          example: '2025-01-24T21:00:00Z'
+                        policies:
+                          type: array
+                          example:
+                            -
+                              hash: a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                              name: 'HOSKY Token'
+                            -
+                              hash: 40fa2aa65d983e1375f1a7c61ba57c0f0f5b9abc
+                              name: 'Clay Nation'
+                          items:
+                            type: object
+                            properties:
+                              hash:
+                                type: string
+                                example: a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                              name:
+                                type: string
+                                example: 'HOSKY Token'
+                        policy_hashes:
+                          type: array
+                          example:
+                            - a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                            - 40fa2aa65d983e1375f1a7c61ba57c0f0f5b9abc
+                          items:
+                            type: string
+      tags:
+        - 'Public API'
+      security: []
+  '/api/events/discover/policy/{policyHash}':
+    get:
+      summary: 'Discover public events for a specific policy.'
+      operationId: discoverPublicEventsForASpecificPolicy
+      description: "Returns upcoming public events that accept the given Cardano policy ID.\nThis is a convenience wrapper around the main discover endpoint with a single policy filter."
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      uuid: 8f5fa03d-02c6-49f1-985f-d71544de8919
+                      name: 'Hydra Launch Party'
+                      description: 'An exclusive Hydra-based launch event with live demos.'
+                      location: 'Las Vegas Convention Center'
+                      date: '2025-01-24'
+                      start: '2025-01-24T18:00:00Z'
+                      end: '2025-01-24T21:00:00Z'
+                      policies:
+                        -
+                          hash: a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                          name: 'HOSKY Token'
+                      policy_hashes:
+                        - a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        uuid: 8f5fa03d-02c6-49f1-985f-d71544de8919
+                        name: 'Hydra Launch Party'
+                        description: 'An exclusive Hydra-based launch event with live demos.'
+                        location: 'Las Vegas Convention Center'
+                        date: '2025-01-24'
+                        start: '2025-01-24T18:00:00Z'
+                        end: '2025-01-24T21:00:00Z'
+                        policies:
+                          -
+                            hash: a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                            name: 'HOSKY Token'
+                        policy_hashes:
+                          - a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                    items:
+                      type: object
+                      properties:
+                        uuid:
+                          type: string
+                          example: 8f5fa03d-02c6-49f1-985f-d71544de8919
+                        name:
+                          type: string
+                          example: 'Hydra Launch Party'
+                        description:
+                          type: string
+                          example: 'An exclusive Hydra-based launch event with live demos.'
+                        location:
+                          type: string
+                          example: 'Las Vegas Convention Center'
+                        date:
+                          type: string
+                          example: '2025-01-24'
+                        start:
+                          type: string
+                          example: '2025-01-24T18:00:00Z'
+                        end:
+                          type: string
+                          example: '2025-01-24T21:00:00Z'
+                        policies:
+                          type: array
+                          example:
+                            -
+                              hash: a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                              name: 'HOSKY Token'
+                          items:
+                            type: object
+                            properties:
+                              hash:
+                                type: string
+                                example: a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                              name:
+                                type: string
+                                example: 'HOSKY Token'
+                        policy_hashes:
+                          type: array
+                          example:
+                            - a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+                          items:
+                            type: string
+      tags:
+        - 'Public API'
+      security: []
+    parameters:
+      -
+        in: path
+        name: policyHash
+        description: 'The Cardano policy ID to filter by.'
+        example: a0028f35d4c7b4f2f0b1d6a0e4c3a9f6d0b0cafe
+        required: true
+        schema:
+          type: string
