@@ -30,7 +30,7 @@ jobs:
 
       # If you have tests, this is where they run
       - name: Run Laravel test suite
-        run: php artisan test --no-interaction
+        run: php artisan test
 
   # Optional: ensure Vite build still works
   frontend-build:
