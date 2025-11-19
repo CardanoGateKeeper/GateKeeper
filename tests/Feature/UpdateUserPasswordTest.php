@@ -2,33 +2,43 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use Laravel\Fortify\Rules\Password as PasswordRule; // Fortify’s rule
+use App\Actions\Fortify\UpdateUserPassword;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
-class UpdateUserPasswordTest
+class UpdateUserPasswordTest extends TestCase
 {
-  /**
-   * Validate and update the given user's password.
-   */
-  public function update(User $user, array $input): void
+  /** @test */
+  public function can_update_user_password()
   {
-    Validator::make($input, [
-      'current_password' => ['required', 'string'],
-      'password'         => ['required', 'string', new PasswordRule, 'confirmed'],
-    ])->after(function ($validator) use ($user, $input) {
-      if (! Hash::check($input['current_password'], $user->password)) {
-        $validator->errors()->add(
-          'current_password',
-          __('The provided password does not match your current password.')
-        );
-      }
-    })->validate();
+    $user = User::factory()->create();
 
-    $user->forceFill([
-      'password' => Hash::make($input['password']),
-    ])->save();
+    $user->password = Hash::make('password');
+    $user->save();
+    $user->refresh();
+
+    $this->assertTrue(
+      Hash::check('password', $user->password),
+      'Sanity check failed: stored password is not "password".'
+    );
+
+    $input = [
+      'current_password' => 'password',
+      'password' => 'this is my password!',
+      'password_confirmation' => 'this is my password!',
+    ];
+
+    $this->actingAs($user, 'web');
+
+    $action = new UpdateUserPassword();
+    $action->update($user, $input);
+
+    $user->refresh();
+
+    $this->assertTrue(
+      Hash::check($input['password'], $user->password),
+      'New password was not saved correctly.'
+    );
   }
 }
