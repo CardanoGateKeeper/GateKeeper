@@ -1,12 +1,9 @@
 <script setup>
-import {computed} from "vue";
 
-const appEnv = import.meta.env.VITE_APP_ENV || 'production'
-const isPreprod = computed(() => appEnv === 'preprod')
 </script>
 <template>
   <v-system-bar window
-    v-if="isPreprod"
+    v-if="$page.props.environment?.is_preprod"
     color="warning"
     density="compact"
     class="align-center">
