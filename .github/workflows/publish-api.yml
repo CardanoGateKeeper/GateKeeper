@@ -7,9 +7,14 @@ jobs:
   build-docs:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -23,3 +28,19 @@ jobs:
 
       - name: Generate Scribe docs
         run: php artisan scribe:generate
+
+      - name: Commit and push docs if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Check for changes under docs/ (adjust path if needed)
+          if [ -n "$(git status --porcelain docs)" ]; then
+            echo "Docs changed, committing..."
+            git add docs
+
+            git commit -m "Update API docs [skip ci]" || echo "No changes to commit"
+            git push
+          else
+            echo "No changes in docs/, nothing to commit."
+          fi
