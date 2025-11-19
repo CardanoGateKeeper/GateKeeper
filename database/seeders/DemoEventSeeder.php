@@ -43,7 +43,7 @@ class DemoEventSeeder extends Seeder
         'hash' => '40fa2aa67258b4ce7b5782f74831d46a84c59a0ff0c28262fab21728',
       ],
       [
-        'name' => 'SpaceBudz (NFT)',
+        'name' => '$Handles (NFT)',
         'hash' => 'f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a',
       ],
       [
