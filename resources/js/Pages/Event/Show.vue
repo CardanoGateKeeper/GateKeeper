@@ -196,17 +196,15 @@ const check_balance = async () => {
       .len(); i++) {
       const Asset = policy_assets.keys()
         .get(i);
-      let asset_id, asset_ascii;
-      if (toHex(Asset.name()).startsWith('000de140')) {
-        asset_id = toHex(Asset.name());
-        asset_ascii = toAscii(Buffer.from(asset_id.substring(8), "hex"));
-      } else {
-        asset_id = toHex(Asset.name());
-        asset_ascii = toAscii(Asset.name());
-      }
-      const AssetName = asset_ascii;
+      const asset_id = toHex(Asset.name());
+      const asset_ascii = toAscii(Buffer.from(
+        asset_id.startsWith('000de140')
+          ? asset_id.substring(8)
+          : asset_id,
+        "hex"
+      ));
       const asset = {
-        name: AssetName,
+        name: asset_ascii,
         policy_id: policy.hash,
         asset_id: asset_id,
       };
